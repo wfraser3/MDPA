@@ -9,13 +9,13 @@ kb = 1.38064852e-23;
 m0 = 9.11e-31;
 m = 0.26*m0;
 T = 300;
-kqq = (1.609e-19)^2;
+kqq = (1e18)*(1.609e-19)^2;
 
 vth = sqrt((kb*T)/m);
 
-grid1 = zeros(1,1000);
+grid1 = zeros(1,10000);
 initParticles = zeros(numParticles,3);
-initParticles(:,2) = vth*1e-3;
+initParticles(:,2) = vth*1e-5;
 
 for i = 1:length(initParticles(:,1))
     initParticles(i,1) = round(rand*1000);
@@ -64,14 +64,14 @@ for time = 1:1000
     force(1) = -kqq/(abs(particles(1,1)-right(1))^2);
     force(length(particles(:,1))) = kqq/(abs(particles(length(particles(:,1)),1)-left(length(particles(:,1))))^2);
     force(isnan(force)) = 0;
-    particles(:,3) = (force./m0)*1e-6;
+    particles(:,3) = (force./m0)*1e-10;
     particles(:,2) = particles(:,2) + particles(:,3);
     tempParticles(:,1) = particles(:,1) + particles(:,2);
     goodPoints1 = tempParticles(:,1) > 1;
     badPoints1 = tempParticles(:,1) < 1;
     goodPoints2 = tempParticles(:,1) < 1000;
     badPoints2 = tempParticles(:,1) > 1000;
-    particles(:,1) = (tempParticles(:,1).*goodPoints1.*goodPoints2) + (badPoints1*(-1).*tempParticles(:,1)) + (badPoints2*1000);
+    particles(:,1) = (tempParticles(:,1).*goodPoints1.*goodPoints2) + (badPoints1*1) + (badPoints2.*1000);
     particles = sortrows(particles,1);
     for i = 1:length(particles(:,1))
         position = round(particles(i,1));
